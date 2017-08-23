@@ -65,7 +65,7 @@ const renderTableBody = (workouts, repeats) => {
       }
 
       rows.push(
-        <TableRow key={h.date}>
+        <TableRow key={h.date} hover>
           <TableCell>
             {dateString}
           </TableCell>

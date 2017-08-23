@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
+import { PropTypes as PropTypesM } from 'mobx-react';
 // material-ui
 import { withStyles } from 'material-ui/styles';
 import List, { ListItem, ListItemText } from 'material-ui/List';
@@ -17,12 +18,12 @@ const styles = theme => ({
   }
 });
 
-const options = ['Жим штанги от груди', 'Отжимния', 'Тяги к груди'];
-
 @withStyles(styles)
 class Workouts extends Component {
   static propTypes = {
-    classes: PropTypes.object.isRequired
+    classes: PropTypes.object.isRequired,
+    workouts: PropTypesM.observableArray.isRequired,
+    showNewTitle: PropTypes.func.isRequired
   };
 
   state = {
@@ -37,16 +38,25 @@ class Workouts extends Component {
     this.setState({ open: true, anchorEl: event.currentTarget });
   };
 
-  handleMenuItemClick = (event, index) => {
+  handleMenuItemClick = (event, index, id) => {
     this.setState({ selectedIndex: index, open: false });
+    this.props.showNewTitle(id === 'last');
   };
 
   handleRequestClose = () => {
     this.setState({ open: false });
   };
 
+  componentWillMount() {}
+
   render() {
     const { root, text } = this.props.classes;
+    const workouts = [...this.props.workouts];
+
+    workouts.push({
+      title: 'Добавить упражнение',
+      id: 'last'
+    });
     return (
       <div className={root}>
         <List>
@@ -60,7 +70,7 @@ class Workouts extends Component {
             <ListItemText
               classes={{ text }}
               primary="Выбирете упражнение"
-              secondary={options[this.state.selectedIndex]}
+              secondary={workouts[this.state.selectedIndex].title}
             />
           </ListItem>
         </List>
@@ -70,13 +80,13 @@ class Workouts extends Component {
           open={this.state.open}
           onRequestClose={this.handleRequestClose}
         >
-          {options.map((option, index) =>
+          {workouts.map((w, index) =>
             <MenuItem
-              key={option}
+              key={w.id}
               selected={index === this.state.selectedIndex}
-              onClick={event => this.handleMenuItemClick(event, index)}
+              onClick={event => this.handleMenuItemClick(event, index, w.id)}
             >
-              {option}
+              {w.title}
             </MenuItem>
           )}
         </Menu>

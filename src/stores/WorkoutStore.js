@@ -8,11 +8,11 @@ let workouts = [
     history: [
       {
         date: 1503503373020,
-        repeats: [10, 5, 8, 8]
+        repeats: [10, 5, 8]
       },
       {
         date: 1503504387020,
-        repeats: [10, 9, 9, 8]
+        repeats: [10, 9, 9, 8, 10]
       }
     ]
   },

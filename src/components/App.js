@@ -12,7 +12,7 @@ class App extends Component {
     return (
       <div>
         <Header />
-        <AddForm />
+        <AddForm workouts={workouts} />
         <WorkoutTable repeats={maxRepeat} workouts={workouts} />
       </div>
     );
