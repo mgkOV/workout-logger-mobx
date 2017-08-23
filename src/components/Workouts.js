@@ -23,13 +23,14 @@ class Workouts extends Component {
   static propTypes = {
     classes: PropTypes.object.isRequired,
     workouts: PropTypesM.observableArray.isRequired,
-    showNewTitle: PropTypes.func.isRequired
+    showNewTitle: PropTypes.func.isRequired,
+    acitivateNewTitle: PropTypes.bool.isRequired
   };
 
   state = {
     anchorEl: undefined,
     open: false,
-    selectedIndex: 1
+    selectedIndex: !this.acitivateNewTitle ? 1 : this.props.workouts.length - 2
   };
 
   button = undefined;

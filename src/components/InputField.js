@@ -32,7 +32,7 @@ let styles = {
   }
 };
 
-const InputField = ({ title, classes }) => {
+const InputField = ({ title, classes, inputValue, handleChange }) => {
   let { rootLabel, inkbar, underline, input } = classes;
 
   return (
@@ -40,14 +40,21 @@ const InputField = ({ title, classes }) => {
       <InputLabel htmlFor="name-simple" classes={{ root: rootLabel }}>
         {title}
       </InputLabel>
-      <Input id="name-simple" classes={{ inkbar, underline, input }} />
+      <Input
+        id="name-simple"
+        value={inputValue}
+        onChange={handleChange}
+        classes={{ inkbar, underline, input }}
+      />
     </FormControl>
   );
 };
 
 InputField.propTypes = {
   title: PropTypes.string.isRequired,
-  classes: PropTypes.object.isRequired
+  classes: PropTypes.object.isRequired,
+  inputValue: PropTypes.string.isRequired,
+  handleChange: PropTypes.func.isRequired
 };
 
 export default withStyles(styles)(InputField);

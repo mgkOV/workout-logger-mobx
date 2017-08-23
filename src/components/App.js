@@ -8,11 +8,17 @@ import { inject, observer } from 'mobx-react';
 @observer
 class App extends Component {
   render() {
-    let { WorkoutStore: { workouts, maxRepeat } } = this.props;
+    let {
+      WorkoutStore: { workouts, maxRepeat, addNewWorkoutTitle, addWorkout }
+    } = this.props;
     return (
       <div>
         <Header />
-        <AddForm workouts={workouts} />
+        <AddForm
+          workouts={workouts}
+          addNewWorkoutTitle={addNewWorkoutTitle}
+          addWorkout={addWorkout}
+        />
         <WorkoutTable repeats={maxRepeat} workouts={workouts} />
       </div>
     );
