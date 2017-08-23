@@ -53,7 +53,6 @@ class WorkoutStore {
     for (let workout of this.workouts) {
       let { history } = workout;
       for (let i of history) {
-        debugger;
         let length = i.repeats && i.repeats.length;
         max = length > max ? length : max;
       }

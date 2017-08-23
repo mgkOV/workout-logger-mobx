@@ -22,67 +22,74 @@ const styles = theme => ({
   }
 });
 
-let id = 0;
-function createData(name, calories, fat, carbs, protein) {
-  id += 1;
-  return { id, name, calories, fat, carbs, protein };
-}
+const renderTableHead = repeats => {
+  let tCells = [];
+  for (let i = 1; i <= repeats; i++) {
+    tCells.push(
+      <TableCell numeric key={i}>
+        Кол-во в<br />
+        {i} походе
+      </TableCell>
+    );
+  }
+  return (
+    <TableRow>
+      <TableCell>Дата</TableCell>
+      <TableCell>Упражнение</TableCell>
+      {tCells}
+    </TableRow>
+  );
+};
 
-const data = [
-  createData('Frozen yoghurt', 159, 6.0, 24, 4.0),
-  createData('Ice cream sandwich', 237, 9.0, 37, 4.3),
-  createData('Eclair', 262, 16.0, 24, 6.0),
-  createData('Cupcake', 305, 3.7, 67, 4.3),
-  createData('Gingerbread', 356, 16.0, 49, 3.9)
-];
+const renderTableBody = (workouts, repeats) => {
+  let rows = [];
 
-const WorkoutTable = props => {
-  const { paper, rootTHead } = props.classes;
+  workouts.forEach(w => {
+    w.history.forEach(h => {
+      let dateString = new Date(h.date).toLocaleString('ru').slice(0, 10);
 
+      let repeatCells = h.repeats.map((qty, idx) =>
+        <TableCell numeric key={dateString + idx}>
+          {qty}
+        </TableCell>
+      );
+
+      if (repeatCells.length < repeats) {
+        for (let i = repeatCells.length; i < repeats; i++) {
+          repeatCells.push(
+            <TableCell numeric key={dateString + i}>
+              -
+            </TableCell>
+          );
+        }
+      }
+
+      rows.push(
+        <TableRow key={h.date}>
+          <TableCell>
+            {dateString}
+          </TableCell>
+          <TableCell>
+            {w.title}
+          </TableCell>
+          {repeatCells}
+        </TableRow>
+      );
+    });
+  });
+
+  return rows;
+};
+
+const WorkoutTable = ({ workouts, repeats, classes: { paper, rootTHead } }) => {
   return (
     <Paper className={paper}>
       <Table>
         <TableHead classes={{ root: rootTHead }}>
-          <TableRow>
-            <TableCell>Дата</TableCell>
-            <TableCell>Упражнение</TableCell>
-            <TableCell numeric>
-              Кол-во в<br />1 походе
-            </TableCell>
-            <TableCell numeric>
-              Кол-во в<br />2 походе
-            </TableCell>
-            <TableCell numeric>
-              Кол-во в<br />3 походе
-            </TableCell>
-            <TableCell numeric>
-              Кол-во в<br />4 походе
-            </TableCell>
-          </TableRow>
+          {renderTableHead(repeats)}
         </TableHead>
         <TableBody>
-          {data.map(n => {
-            return (
-              <TableRow key={n.id}>
-                <TableCell>11.03.17</TableCell>
-                <TableCell>
-                  {n.name}
-                </TableCell>
-                <TableCell numeric>
-                  {n.calories}
-                </TableCell>
-                <TableCell numeric>
-                  {n.fat}
-                </TableCell>
-                <TableCell numeric>
-                  {n.carbs}
-                </TableCell>
-                <TableCell numeric>
-                  {n.protein}
-                </TableCell>
-              </TableRow>
-            );
-          })}
+          {renderTableBody(workouts, repeats)}
         </TableBody>
       </Table>
     </Paper>

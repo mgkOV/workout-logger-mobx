@@ -8,13 +8,12 @@ import { inject, observer } from 'mobx-react';
 @observer
 class App extends Component {
   render() {
-    let { WorkoutStore } = this.props;
-    console.log(WorkoutStore.maxRepeat);
+    let { WorkoutStore: { workouts, maxRepeat } } = this.props;
     return (
       <div>
         <Header />
         <AddForm />
-        <WorkoutTable />
+        <WorkoutTable repeats={maxRepeat} workouts={workouts} />
       </div>
     );
   }
