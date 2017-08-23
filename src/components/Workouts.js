@@ -1,14 +1,19 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
+// material-ui
 import { withStyles } from 'material-ui/styles';
 import List, { ListItem, ListItemText } from 'material-ui/List';
 import Menu, { MenuItem } from 'material-ui/Menu';
+import { deepOrange } from 'material-ui/colors';
 
 const styles = theme => ({
   root: {
     width: '100%',
     maxWidth: 360,
     background: theme.palette.background.paper
+  },
+  text: {
+    color: deepOrange[500]
   }
 });
 
@@ -16,6 +21,10 @@ const options = ['Жим штанги от груди', 'Отжимния', 'Т�
 
 @withStyles(styles)
 class Workouts extends Component {
+  static propTypes = {
+    classes: PropTypes.object.isRequired
+  };
+
   state = {
     anchorEl: undefined,
     open: false,
@@ -37,9 +46,9 @@ class Workouts extends Component {
   };
 
   render() {
-    const classes = this.props.classes;
+    const { root, text } = this.props.classes;
     return (
-      <div className={classes.root}>
+      <div className={root}>
         <List>
           <ListItem
             button
@@ -49,6 +58,7 @@ class Workouts extends Component {
             onClick={this.handleClickListItem}
           >
             <ListItemText
+              classes={{ text }}
               primary="Выбирете упражнение"
               secondary={options[this.state.selectedIndex]}
             />

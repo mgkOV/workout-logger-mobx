@@ -1,9 +1,15 @@
 import React, { Component } from 'react';
 import Header from './Header';
+import AddForm from './AddForm';
 
 class App extends Component {
   render() {
-    return <Header />;
+    return (
+      <div>
+        <Header />
+        <AddForm />
+      </div>
+    );
   }
 }
 
