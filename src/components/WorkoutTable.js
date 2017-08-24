@@ -105,18 +105,22 @@ class WorkoutTable extends Component {
       WorkoutStore: { workouts, maxRepeat },
       classes: { paper, rootTHead }
     } = this.props;
-    return (
-      <Paper className={paper}>
-        <Table>
-          <TableHead classes={{ root: rootTHead }}>
-            {this.renderTableHead(maxRepeat)}
-          </TableHead>
-          <TableBody>
-            {this.renderTableBody(workouts, maxRepeat)}
-          </TableBody>
-        </Table>
-      </Paper>
-    );
+    if (workouts.lengtn === 0) {
+      return '';
+    } else {
+      return (
+        <Paper className={paper}>
+          <Table>
+            <TableHead classes={{ root: rootTHead }}>
+              {this.renderTableHead(maxRepeat)}
+            </TableHead>
+            <TableBody>
+              {this.renderTableBody(workouts, maxRepeat)}
+            </TableBody>
+          </Table>
+        </Paper>
+      );
+    }
   }
 }
 

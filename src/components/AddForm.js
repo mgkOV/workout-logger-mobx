@@ -127,14 +127,15 @@ class AddForm extends Component {
                     decrease={this.decreaseRepeats(i)}
                   />
                 )}
+                <Button
+                  raised
+                  className={this.props.classes.button}
+                  onClick={this.handleSave}
+                >
+                  Сохранить{' '}
+                  <AddCircle className={this.props.classes.iconShowTable} />
+                </Button>
               </div>}
-          <Button
-            raised
-            className={this.props.classes.button}
-            onClick={this.handleSave}
-          >
-            Сохранить <AddCircle className={this.props.classes.iconShowTable} />
-          </Button>
         </form>;
 
   // ******* save new workout to WorkoutStore *******
@@ -157,10 +158,11 @@ class AddForm extends Component {
 
   // ******* set active workout *******
   setActiveWorkout = id => {
-    console.log(id);
-    this.setState({
-      activeWorkout: id
-    });
+    if (id !== 'last') {
+      this.setState({
+        activeWorkout: id
+      });
+    }
   };
 
   // ******* set show or not form to add new workout to table  *******
@@ -179,7 +181,16 @@ class AddForm extends Component {
 
   // ******* add new workout title to WorkoutStore *******
   addNewTitle = () => {
-    this.props.WorkoutStore.addNewWorkoutTitle(this.state.newWorkoutTitle);
+    const setActiveWorkout = id => {
+      this.setState({
+        activeWorkout: id
+      });
+    };
+
+    this.props.WorkoutStore.addNewWorkoutTitle(
+      this.state.newWorkoutTitle,
+      setActiveWorkout
+    );
     this.setState(prevState => ({
       repeats: [1],
       acitivateNewTitle: true,

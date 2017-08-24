@@ -32,7 +32,7 @@ class Workouts extends Component {
   state = {
     anchorEl: undefined,
     open: false,
-    selectedIndex: !this.acitivateNewTitle ? 1 : this.props.workouts.length - 2
+    selectedIndex: 1
   };
 
   button = undefined;
@@ -50,8 +50,6 @@ class Workouts extends Component {
   handleRequestClose = () => {
     this.setState({ open: false });
   };
-
-  componentWillMount() {}
 
   render() {
     const { root, text } = this.props.classes;

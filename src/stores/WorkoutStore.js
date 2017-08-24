@@ -36,18 +36,23 @@ class WorkoutStore {
   @observable workouts = workouts;
 
   @action
-  addNewWorkoutTitle = workout => {
+  addNewWorkoutTitle = (workout, cb) => {
     const id = uuid();
     this.workouts.push({ id, title: workout, history: [] });
+    cb(id);
   };
 
   @action
-  addWorkout = workout => {
-    let idx = this.workouts.indexOf(w => {
-      return w.id === workout.id;
+  addWorkout = ({ id, date, repeats }) => {
+    let idx = this.workouts.findIndex(w => {
+      return w.id === id;
     });
-    // this.workouts[idx].history.push(workout);
-    console.log('++++', idx, this.workouts[1].id === workout.id);
+    console.log(id);
+    console.log(this.workouts);
+    this.workouts[idx].history.push({
+      date,
+      repeats
+    });
   };
 
   @computed
