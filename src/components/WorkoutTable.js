@@ -12,6 +12,8 @@ import Table, {
 } from 'material-ui/Table';
 import Paper from 'material-ui/Paper';
 import { deepOrange } from 'material-ui/colors';
+import IconButton from 'material-ui/IconButton';
+import DeleteIcon from 'material-ui-icons/Delete';
 
 const styles = theme => ({
   paper: {

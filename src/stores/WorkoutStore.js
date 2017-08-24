@@ -40,18 +40,18 @@ class WorkoutStore {
     const id = uuid();
     this.workouts.push({ id, title: workout, history: [] });
     cb(id);
-    this.saveBooks();
+    this.saveWorkout();
   };
 
   @action
-  getBooks = () => {
+  getWorkouts = () => {
     try {
       this.workouts = JSON.parse(localStorage.getItem('workouts')) || [];
     } catch (e) {}
   };
 
   @action
-  saveBooks = () => {
+  saveWorkout = () => {
     try {
       localStorage.setItem('workouts', JSON.stringify(this.workouts));
     } catch (e) {}
@@ -68,7 +68,14 @@ class WorkoutStore {
       date,
       repeats
     });
-    this.saveBooks();
+    this.saveWorkout();
+  };
+
+  @action
+  deleteWorkout = id => {
+    let idx = this.workouts.findIndex(w => w.id === id);
+    this.workouts.slice(idx, 1);
+    this.saveWorkout();
   };
 
   @computed
