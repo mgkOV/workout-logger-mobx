@@ -1,9 +1,10 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import { PropTypes as PropTypesM } from 'mobx-react';
-// import classNames from 'classnames';
+import { inject, observer } from 'mobx-react';
 
 // material-ui
+// import classNames from 'classnames';
 import { withStyles } from 'material-ui/styles';
 import AddCircle from 'material-ui-icons/AddCircle';
 import IconButton from 'material-ui/IconButton';
@@ -45,24 +46,29 @@ let styles = theme => ({
   }
 });
 
+@inject('WorkoutStore')
+@observer
 @withStyles(styles)
 class AddForm extends Component {
   static propTypes = {
     classes: PropTypes.object.isRequired,
-    workouts: PropTypesM.observableArray.isRequired,
-    addNewWorkoutTitle: PropTypes.func.isRequired,
-    addWorkout: PropTypes.func.isRequired
+    WorkoutStore: PropTypes.shape({
+      workouts: PropTypesM.observableArray.isRequired,
+      addNewWorkoutTitle: PropTypes.func.isRequired,
+      addWorkout: PropTypes.func.isRequired
+    }).isRequired
   };
 
   state = {
-    repeats: [1],
-    acitivateNewTitle: false,
-    showForm: false,
-    newTitle: false,
-    workoutTitle: '',
-    activeTitle: ''
+    repeats: [1], // array of repeats in sets in order
+    acitivateNewTitle: false, // make active or not new workout in list of workouts
+    showForm: false, // show or not add form
+    showAddTitleInput: false, // show or not add title input
+    newWorkoutTitle: '', // new workout title from input
+    activeWorkout: this.props.WorkoutStore.workouts[1].id // active workout in list of all workouts
   };
 
+  // render add new workout form
   renderForm = (form, iconAddNewTitle) =>
     !this.state.showForm
       ? ''
@@ -70,13 +76,14 @@ class AddForm extends Component {
           <Grid container direction="row" justify="center" align="center">
             <Grid item xs={12} sm={5}>
               <Workouts
-                workouts={this.props.workouts}
-                showNewTitle={this.showNewTitle}
+                workouts={this.props.WorkoutStore.workouts}
+                showNewTitleInput={this.showNewTitleInput}
                 acitivateNewTitle={this.state.acitivateNewTitle}
+                setActiveWorkout={this.setActiveWorkout}
               />
             </Grid>
             <Grid item xs={12} sm={7}>
-              {this.state.newTitle
+              {this.state.showAddTitleInput
                 ? <Grid
                     container
                     direction="row"
@@ -86,7 +93,7 @@ class AddForm extends Component {
                     <Grid item xs={10}>
                       <InputField
                         title="Название упражнения"
-                        inputValue={this.state.workoutTitle}
+                        inputValue={this.state.newWorkoutTitle}
                         handleChange={this.handleInputChange}
                       />
                     </Grid>
@@ -108,7 +115,7 @@ class AddForm extends Component {
                   />}
             </Grid>
           </Grid>
-          {this.state.newTitle
+          {this.state.showAddTitleInput
             ? ''
             : <div style={{ margin: '15px' }}>
                 {this.state.repeats.map((r, i) =>
@@ -130,55 +137,72 @@ class AddForm extends Component {
           </Button>
         </form>;
 
+  // ******* save new workout to WorkoutStore *******
   handleSave = () => {
     let workout = {
-      id: '',
+      id: this.state.activeWorkout,
       date: Date.now(),
       repeats: this.state.repeats
     };
-    this.props.addWorkout(workout);
+
+    this.props.WorkoutStore.addWorkout(workout);
     this.setState({
       repeats: [1],
       acitivateNewTitle: false,
       showForm: false,
-      newTitle: false,
-      workoutTitle: ''
+      showAddTitleInput: false,
+      newWorkoutTitle: ''
     });
   };
 
+  // ******* set active workout *******
+  setActiveWorkout = id => {
+    console.log(id);
+    this.setState({
+      activeWorkout: id
+    });
+  };
+
+  // ******* set show or not form to add new workout to table  *******
   showForm = () => {
     this.setState({
       showForm: true
     });
   };
 
-  showNewTitle = show => {
+  // ******* set show or not new title input *******
+  showNewTitleInput = show => {
     this.setState({
-      newTitle: show
+      showAddTitleInput: show
     });
   };
 
+  // ******* add new workout title to WorkoutStore *******
   addNewTitle = () => {
-    this.props.addNewWorkoutTitle(this.state.workoutTitle);
+    this.props.WorkoutStore.addNewWorkoutTitle(this.state.newWorkoutTitle);
     this.setState(prevState => ({
+      repeats: [1],
       acitivateNewTitle: true,
-      newTitle: false,
-      workoutTitle: ''
+      showAddTitleInput: false,
+      newWorkoutTitle: ''
     }));
   };
 
+  // ******* set new workout title to this.store on InputField change *******
   handleInputChange = e => {
     this.setState({
-      workoutTitle: e.target.value
+      newWorkoutTitle: e.target.value
     });
   };
 
+  // ******* increase quantity of sets *******
   increaseSets = () => {
     this.setState(prevState => ({
       repeats: [...prevState.repeats, 1]
     }));
   };
 
+  // ******* decrease quantity of sets *******
   decreaseSets = () => {
     this.setState(prevState => ({
       repeats:
@@ -188,6 +212,7 @@ class AddForm extends Component {
     }));
   };
 
+  // ******* increase quantity of repeats in one set*******
   increaseRepeats = idx => () => {
     this.setState(prevState => {
       let newRepeats = [...prevState.repeats];
@@ -198,6 +223,7 @@ class AddForm extends Component {
     });
   };
 
+  // ******* Decrease quantity of repeats in one set ********
   decreaseRepeats = idx => () => {
     this.setState(prevState => {
       let newRepeats = [...prevState.repeats];
@@ -210,6 +236,7 @@ class AddForm extends Component {
     });
   };
 
+  //  ******* Render *******
   render() {
     let {
       form,

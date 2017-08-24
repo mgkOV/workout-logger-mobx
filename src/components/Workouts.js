@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import { PropTypes as PropTypesM } from 'mobx-react';
+
 // material-ui
 import { withStyles } from 'material-ui/styles';
 import List, { ListItem, ListItemText } from 'material-ui/List';
@@ -23,7 +24,8 @@ class Workouts extends Component {
   static propTypes = {
     classes: PropTypes.object.isRequired,
     workouts: PropTypesM.observableArray.isRequired,
-    showNewTitle: PropTypes.func.isRequired,
+    showNewTitleInput: PropTypes.func.isRequired,
+    setActiveWorkout: PropTypes.func.isRequired,
     acitivateNewTitle: PropTypes.bool.isRequired
   };
 
@@ -41,7 +43,8 @@ class Workouts extends Component {
 
   handleMenuItemClick = (event, index, id) => {
     this.setState({ selectedIndex: index, open: false });
-    this.props.showNewTitle(id === 'last');
+    this.props.showNewTitleInput(id === 'last');
+    this.props.setActiveWorkout(id);
   };
 
   handleRequestClose = () => {
@@ -58,6 +61,7 @@ class Workouts extends Component {
       title: 'Добавить упражнение',
       id: 'last'
     });
+
     return (
       <div className={root}>
         <List>

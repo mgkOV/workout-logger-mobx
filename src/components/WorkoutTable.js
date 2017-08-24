@@ -1,5 +1,8 @@
-import React from 'react';
+import React, { Component } from 'react';
 import PropTypes from 'prop-types';
+import { inject, observer } from 'mobx-react';
+import { PropTypes as PropTypesM } from 'mobx-react';
+//material-ui
 import { withStyles } from 'material-ui/styles';
 import Table, {
   TableBody,
@@ -22,82 +25,99 @@ const styles = theme => ({
   }
 });
 
-const renderTableHead = repeats => {
-  let tCells = [];
-  for (let i = 1; i <= repeats; i++) {
-    tCells.push(
-      <TableCell numeric key={i}>
-        Кол-во в<br />
-        {i} походе
-      </TableCell>
-    );
-  }
-  return (
-    <TableRow>
-      <TableCell>Дата</TableCell>
-      <TableCell>Упражнение</TableCell>
-      {tCells}
-    </TableRow>
-  );
-};
+@inject('WorkoutStore')
+@observer
+class WorkoutTable extends Component {
+  static propTypes = {
+    classes: PropTypes.object.isRequired,
+    WorkoutStore: PropTypes.shape({
+      workouts: PropTypesM.observableArray.isRequired,
+      maxRepeat: PropTypes.number.isRequired
+    }).isRequired
+  };
 
-const renderTableBody = (workouts, repeats) => {
-  let rows = [];
-
-  workouts.forEach(w => {
-    w.history.forEach(h => {
-      let dateString = new Date(h.date).toLocaleString('ru').slice(0, 10);
-
-      let repeatCells = h.repeats.map((qty, idx) =>
-        <TableCell numeric key={dateString + idx}>
-          {qty}
+  //******** Table Head ********
+  renderTableHead = repeats => {
+    let tCells = [];
+    for (let i = 1; i <= repeats; i++) {
+      tCells.push(
+        <TableCell numeric key={i}>
+          Кол-во в<br />
+          {i} походе
         </TableCell>
       );
+    }
+    return (
+      <TableRow>
+        <TableCell>Дата</TableCell>
+        <TableCell>Упражнение</TableCell>
+        {tCells}
+      </TableRow>
+    );
+  };
 
-      if (repeatCells.length < repeats) {
-        for (let i = repeatCells.length; i < repeats; i++) {
-          repeatCells.push(
-            <TableCell numeric key={dateString + i}>
-              -
-            </TableCell>
-          );
+  //******** Table BODY ********
+  renderTableBody = (workouts, repeats) => {
+    // init rows of table
+    let rows = [];
+
+    workouts.forEach(w => {
+      w.history.forEach(h => {
+        let dateString = new Date(h.date).toLocaleString('ru').slice(0, 10);
+        // create cells with quantity of each repeat
+        let repeatCells = h.repeats.map((qty, idx) =>
+          <TableCell numeric key={dateString + idx}>
+            {qty}
+          </TableCell>
+        );
+        // add empty cells
+        if (repeatCells.length < repeats) {
+          for (let i = repeatCells.length; i < repeats; i++) {
+            repeatCells.push(
+              <TableCell numeric key={dateString + i}>
+                -
+              </TableCell>
+            );
+          }
         }
-      }
-
-      rows.push(
-        <TableRow key={h.date} hover>
-          <TableCell>
-            {dateString}
-          </TableCell>
-          <TableCell>
-            {w.title}
-          </TableCell>
-          {repeatCells}
-        </TableRow>
-      );
+        // add row of table
+        rows.push(
+          <TableRow key={h.date} hover>
+            <TableCell>
+              {dateString}
+            </TableCell>
+            <TableCell>
+              {w.title}
+            </TableCell>
+            {repeatCells}
+          </TableRow>
+        );
+      });
     });
-  });
 
-  return rows;
-};
+    // return rows of table
+    return rows;
+  };
 
-const WorkoutTable = ({ workouts, repeats, classes: { paper, rootTHead } }) => {
-  return (
-    <Paper className={paper}>
-      <Table>
-        <TableHead classes={{ root: rootTHead }}>
-          {renderTableHead(repeats)}
-        </TableHead>
-        <TableBody>
-          {renderTableBody(workouts, repeats)}
-        </TableBody>
-      </Table>
-    </Paper>
-  );
-};
-
-WorkoutTable.propTypes = {
-  classes: PropTypes.object.isRequired
-};
+  // ******** Render ********
+  render() {
+    const {
+      WorkoutStore: { workouts, maxRepeat },
+      classes: { paper, rootTHead }
+    } = this.props;
+    return (
+      <Paper className={paper}>
+        <Table>
+          <TableHead classes={{ root: rootTHead }}>
+            {this.renderTableHead(maxRepeat)}
+          </TableHead>
+          <TableBody>
+            {this.renderTableBody(workouts, maxRepeat)}
+          </TableBody>
+        </Table>
+      </Paper>
+    );
+  }
+}
 
 export default withStyles(styles)(WorkoutTable);

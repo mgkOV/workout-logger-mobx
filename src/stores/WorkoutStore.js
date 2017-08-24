@@ -43,9 +43,11 @@ class WorkoutStore {
 
   @action
   addWorkout = workout => {
-    let idx = this.workouts.indexOf(i => i.id === workout.id);
+    let idx = this.workouts.indexOf(w => {
+      return w.id === workout.id;
+    });
     // this.workouts[idx].history.push(workout);
-    console.log('++++', idx);
+    console.log('++++', idx, this.workouts[1].id === workout.id);
   };
 
   @computed
