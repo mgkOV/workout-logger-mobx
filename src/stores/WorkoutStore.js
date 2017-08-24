@@ -40,6 +40,21 @@ class WorkoutStore {
     const id = uuid();
     this.workouts.push({ id, title: workout, history: [] });
     cb(id);
+    this.saveBooks();
+  };
+
+  @action
+  getBooks = () => {
+    try {
+      this.workouts = JSON.parse(localStorage.getItem('workouts')) || [];
+    } catch (e) {}
+  };
+
+  @action
+  saveBooks = () => {
+    try {
+      localStorage.setItem('workouts', JSON.stringify(this.workouts));
+    } catch (e) {}
   };
 
   @action
@@ -53,6 +68,7 @@ class WorkoutStore {
       date,
       repeats
     });
+    this.saveBooks();
   };
 
   @computed
