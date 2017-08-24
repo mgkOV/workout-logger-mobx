@@ -63,7 +63,7 @@ class AddForm extends Component {
     repeats: [1], // array of repeats in sets in order
     acitivateNewTitle: false, // make active or not new workout in list of workouts
     showForm: false, // show or not add form
-    showAddTitleInput: false, // show or not add title input
+    showAddTitleInput: !this.props.WorkoutStore.workouts.length || false, // show or not add title input
     newWorkoutTitle: '', // new workout title from input
     activeWorkout: '' // active workout in list of all workouts
   };
