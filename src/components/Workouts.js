@@ -32,7 +32,7 @@ class Workouts extends Component {
   state = {
     anchorEl: undefined,
     open: false,
-    selectedIndex: 1
+    selectedIndex: 0
   };
 
   button = undefined;
