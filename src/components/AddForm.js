@@ -65,7 +65,7 @@ class AddForm extends Component {
     showForm: false, // show or not add form
     showAddTitleInput: false, // show or not add title input
     newWorkoutTitle: '', // new workout title from input
-    activeWorkout: this.props.WorkoutStore.workouts[0].id // active workout in list of all workouts
+    activeWorkout: '' // active workout in list of all workouts
   };
 
   // render add new workout form
