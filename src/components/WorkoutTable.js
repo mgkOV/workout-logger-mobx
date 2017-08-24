@@ -24,6 +24,9 @@ const styles = theme => ({
   },
   rootTHead: {
     color: deepOrange[500]
+  },
+  paddingCell: {
+    padding: '0 10px'
   }
 });
 
@@ -43,7 +46,11 @@ class WorkoutTable extends Component {
     let tCells = [];
     for (let i = 1; i <= repeats; i++) {
       tCells.push(
-        <TableCell numeric key={i}>
+        <TableCell
+          numeric
+          key={i}
+          classes={{ padding: this.props.classes.paddingCell }}
+        >
           Кол-во в<br />
           {i} походе
         </TableCell>
@@ -51,9 +58,14 @@ class WorkoutTable extends Component {
     }
     return (
       <TableRow>
-        <TableCell>Дата</TableCell>
-        <TableCell>Упражнение</TableCell>
+        <TableCell classes={{ padding: this.props.classes.paddingCell }}>
+          Дата
+        </TableCell>
+        <TableCell classes={{ padding: this.props.classes.paddingCell }}>
+          Упражнение
+        </TableCell>
         {tCells}
+        <TableCell classes={{ padding: this.props.classes.paddingCell }} />
       </TableRow>
     );
   };
@@ -68,7 +80,11 @@ class WorkoutTable extends Component {
         let dateString = new Date(h.date).toLocaleString('ru').slice(0, 10);
         // create cells with quantity of each repeat
         let repeatCells = h.repeats.map((qty, idx) =>
-          <TableCell numeric key={dateString + idx}>
+          <TableCell
+            numeric
+            key={dateString + idx}
+            classes={{ padding: this.props.classes.paddingCell }}
+          >
             {qty}
           </TableCell>
         );
@@ -76,7 +92,11 @@ class WorkoutTable extends Component {
         if (repeatCells.length < repeats) {
           for (let i = repeatCells.length; i < repeats; i++) {
             repeatCells.push(
-              <TableCell numeric key={dateString + i}>
+              <TableCell
+                numeric
+                key={dateString + i}
+                classes={{ padding: this.props.classes.paddingCell }}
+              >
                 -
               </TableCell>
             );
@@ -85,13 +105,21 @@ class WorkoutTable extends Component {
         // add row of table
         rows.push(
           <TableRow key={h.date} hover>
-            <TableCell>
+            <TableCell classes={{ padding: this.props.classes.paddingCell }}>
               {dateString}
             </TableCell>
-            <TableCell>
+            <TableCell classes={{ padding: this.props.classes.paddingCell }}>
               {w.title}
             </TableCell>
             {repeatCells}
+            <TableCell classes={{ padding: this.props.classes.paddingCell }}>
+              <IconButton
+                aria-label="Delete"
+                onClick={this.handleDelete(w.id, h.date)}
+              >
+                <DeleteIcon />
+              </IconButton>
+            </TableCell>
           </TableRow>
         );
       });
@@ -101,28 +129,29 @@ class WorkoutTable extends Component {
     return rows;
   };
 
+  // ******* delete workout from table *******
+  handleDelete = (workoutId, historyDate) => () =>
+    this.props.WorkoutStore.deleteWorkout(workoutId, historyDate);
+
   // ******** Render ********
   render() {
     const {
       WorkoutStore: { workouts, maxRepeat },
       classes: { paper, rootTHead }
     } = this.props;
-    if (workouts.lengtn === 0) {
-      return '';
-    } else {
-      return (
-        <Paper className={paper}>
-          <Table>
-            <TableHead classes={{ root: rootTHead }}>
-              {this.renderTableHead(maxRepeat)}
-            </TableHead>
-            <TableBody>
-              {this.renderTableBody(workouts, maxRepeat)}
-            </TableBody>
-          </Table>
-        </Paper>
-      );
-    }
+
+    return (
+      <Paper className={paper}>
+        <Table>
+          <TableHead classes={{ root: rootTHead }}>
+            {this.renderTableHead(maxRepeat)}
+          </TableHead>
+          <TableBody>
+            {this.renderTableBody(workouts, maxRepeat)}
+          </TableBody>
+        </Table>
+      </Paper>
+    );
   }
 }
 

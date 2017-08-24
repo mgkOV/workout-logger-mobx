@@ -62,8 +62,6 @@ class WorkoutStore {
     let idx = this.workouts.findIndex(w => {
       return w.id === id;
     });
-    console.log(id);
-    console.log(this.workouts);
     this.workouts[idx].history.push({
       date,
       repeats
@@ -72,9 +70,10 @@ class WorkoutStore {
   };
 
   @action
-  deleteWorkout = id => {
+  deleteWorkout = (id, date) => {
     let idx = this.workouts.findIndex(w => w.id === id);
-    this.workouts.slice(idx, 1);
+    let setIdx = this.workouts[idx].history.findIndex(h => h.date === date);
+    this.workouts[idx].history.splice(setIdx, 1);
     this.saveWorkout();
   };
 
